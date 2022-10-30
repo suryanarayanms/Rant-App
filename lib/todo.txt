@@ -1,0 +1,10 @@
+1.   Favourite button on click
+
+2.   Dialog box for homepage, favourites page and delete option
+
+3.   Dark/Light Mode
+
+    ternary operator:
+    if darkmode then rant_logo_dark 
+        else 
+            rant_logo_light

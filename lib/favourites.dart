@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:rant_app/profile.dart';
-import 'package:rant_app/theme.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Favourites extends StatefulWidget {
+  const Favourites({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Favourites> createState() => _FavouritesState();
 }
 
-class _HomePageState extends State<HomePage> {
-  _changeTheme() {
-    ThemeBuilder.of(context)?.theme();
-  }
-
+class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,33 +17,13 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 45.0, left: 30),
+              padding: const EdgeInsets.only(top: 45.0, left: 6),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Profile()))
-                    },
-                    child: SizedBox(
-                        height: 40,
-                        child: Image.asset('assets/images/profile.png')),
-                  ),
                   SizedBox(
                       height: 70,
                       child: Image.asset('assets/images/rant_logo.png')),
-                  GestureDetector(
-                    // onTap: () => Navigator.pop(context) ,
-                    onTap: () {
-                      _changeTheme();
-                    },
-                    child: const Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: Icon(Icons.dark_mode)),
-                  ),
                 ],
               ),
             ),

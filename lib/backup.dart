@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rant_app/home_page.dart';
 import 'package:rant_app/theme.dart';
-
-import 'navbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,7 +68,7 @@ class LoginPageState extends State<LoginPage> {
           onTap: () => Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => const MyNavigationBar()),
+                  builder: (BuildContext context) => const HomePage()),
               (route) => false),
           child: Padding(
             padding: const EdgeInsets.only(left: 30.0, right: 30),
