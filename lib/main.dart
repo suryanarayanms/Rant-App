@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rant_app/theme.dart';
 
 import 'navbar.dart';
 
@@ -13,20 +12,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ThemeBuilder(
-      builder: (context, _brightness, _bool) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Rant',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            brightness: _brightness,
-          ),
-          home: const LoginPage(),
-        );
-      },
-      defaultBrightness: Brightness.light,
-      defaultBool: true,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Rant',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const LoginPage(),
     );
   }
 }
