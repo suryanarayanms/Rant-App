@@ -78,9 +78,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomePage(value),
-      NewRant(value),
-      Favourites(value)
+      const HomePage(),
+      const NewRant(),
+      const Favourites()
     ];
     setState(() {
       // bool temp = widget.value;

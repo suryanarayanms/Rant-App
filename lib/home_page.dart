@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rant_app/profile.dart';
 
 class HomePage extends StatefulWidget {
-  late bool value;
-
-  HomePage(this.value, {Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -33,8 +31,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        Profile(widget.value)))
+                                    builder: (context) => const Profile()))
                           },
                           child: SizedBox(
                               height: 40,
@@ -45,21 +42,10 @@ class _HomePageState extends State<HomePage> {
                             child: Image.asset('assets/images/rant_logo.png')),
                         GestureDetector(
                           // onTap: () => Navigator.pop(context),
-                          onTap: () {
-                            _notifier.value = mode == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light;
-                            if (_notifier.value == ThemeMode.light) {
-                              widget.value = true;
-                            } else {
-                              widget.value = false;
-                            }
-                          },
-                          child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Icon(widget.value
-                                  ? Icons.dark_mode
-                                  : Icons.light_mode)),
+                          onTap: () {},
+                          child: const Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Icon(Icons.dark_mode)),
                         ),
                       ],
                     ),
@@ -104,8 +90,8 @@ class _HomePageState extends State<HomePage> {
                                               'assets/images/profile.png')),
                                     ),
                                     GestureDetector(
-                                        onTap: () => {print(widget.value)},
-                                        child: Text('Surya M S')),
+                                        onTap: () => {},
+                                        child: const Text('Surya M S')),
                                     const Spacer(),
                                     Padding(
                                       padding:
@@ -134,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding: const EdgeInsets.all(20),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Text('Hi there'),
                                   ],
                                 ),
