@@ -1,4 +1,4 @@
-package com.example.rant_app
+package com.ceosurya.rant
 
 import io.flutter.embedding.android.FlutterActivity
 

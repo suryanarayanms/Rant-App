@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "705324967613",
+    "project_id": "rant-me",
+    "storage_bucket": "rant-me.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705324967613:android:831b88670304ff7cf8f9d4",
+        "android_client_info": {
+          "package_name": "com.ceosurya.rant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705324967613-mt2c1vbpsh2d72ns256sf7f0lg23opd4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ceosurya.rant",
+            "certificate_hash": "e11dd534e56e253960b7d0294dfe7cbd564a7e33"
+          }
+        },
+        {
+          "client_id": "705324967613-roqo2me7opfd1g7m23b5k3npkkhirfi8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtEqq3HerS4Bm_sIImxP6e9aJLdMFZOnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705324967613-roqo2me7opfd1g7m23b5k3npkkhirfi8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

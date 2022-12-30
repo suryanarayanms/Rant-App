@@ -1,10 +1,25 @@
-1.   Favourite button on click
+Redesign the UI
 
-2.   Dialog box for homepage, favourites page and delete option
+Dark/glassmorphism Mode
 
-3.   Dark/Light Mode
 
-    ternary operator:
-    if darkmode then rant_logo_dark 
-        else 
-            rant_logo_light
+Enter keystore password:  
+Alias name: androiddebugkey
+Creation date: 19-Dec-2021
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: C=US, O=Android, CN=Android Debug
+Issuer: C=US, O=Android, CN=Android Debug
+Serial number: 1
+Valid from: Sun Dec 19 13:11:37 IST 2021 until: Tue Dec 12 13:11:37 IST 2051
+Certificate fingerprints:
+         SHA1: E1:1D:D5:34:E5:6E:25:39:60:B7:D0:29:4D:FE:7C:BD:56:4A:7E:33
+         SHA256: 65:6F:F4:61:11:BD:C7:FF:AC:D8:66:DE:CD:1D:FA:F9:CD:F7:7E:7A:72:02:E3:0D:22:B2:F8:CB:A8:3B:6F:8B
+Signature algorithm name: SHA1withRSA (weak)
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 1
+
+Warning:
+The certificate uses the SHA1withRSA signature algorithm which is considered a security risk. This algorithm will be disabled in a future update.
+PS E:\Project\My Flutter Apps\rant_app> 

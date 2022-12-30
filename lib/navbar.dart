@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rant_app/favourites.dart';
 import 'package:rant_app/home_page.dart';
 import 'package:rant_app/new_rant.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({Key? key}) : super(key: key);
