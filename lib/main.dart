@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rant_app/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // import 'navbar.dart';
 
@@ -68,6 +69,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+  String? name = '';
+  String? uid = '';
+  // String theme = '';
+  // String rants = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +110,20 @@ class LoginPageState extends State<LoginPage> {
 
               onTap: () => {
                 AuthService().signInWithGoogle(),
+                // name = FirebaseAuth.instance.currentUser!.displayName,
+                // uid = FirebaseAuth.instance.currentUser!.uid,
+                // print('boomeerrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'),
+                // if (FirebaseAuth.instance.currentUser!.displayName != 'null')
+                //   {
+                //     // Map <String, dynamic> data = {
+                //     //     "uid":uid,
+                //     //     "name": name
+                //     //   },
+                //     FirebaseFirestore.instance
+                //         .collection("users")
+                //         .doc(uid)
+                //         .set({"uid": uid, "name": name})
+                //   }
               },
               child: Padding(
                 padding: const EdgeInsets.all(40),
