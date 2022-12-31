@@ -1,7 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rant_app/edit_rant.dart';
-
-import 'navbar.dart';
 
 class NewRant extends StatefulWidget {
   const NewRant({Key? key}) : super(key: key);
@@ -13,210 +12,153 @@ class NewRantState extends State<NewRant> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        toolbarHeight: 80,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.podcasts_outlined),
+            onPressed: () {},
+          ),
+        ], //<Widget>[]
+        backgroundColor: Colors.black,
+        // elevation: 50.0,
+        leadingWidth: 80,
+        // leadingWidth: MediaQuery.of(context).size.width,
+        // leading: GestureDetector(
+        //   onTap: (() => Navigator.pop(context)),
+        //   child: Icon(
+        //     CupertinoIcons.delete,
+        //   ),
+        // ),
+        title: const Padding(padding: EdgeInsets.all(10), child: Text('Rant')),
+      ),
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 45.0, left: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      height: 70,
-                      child: Image.asset('assets/images/rant_logo.png')),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 100,
-                margin: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  color: Colors.grey.shade100,
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color.fromARGB(20, 0, 0, 0),
-                        blurRadius: 5,
-                        offset: Offset(7, 7)),
-                    BoxShadow(
-                        color: Colors.white,
-                        blurRadius: 5,
-                        offset: Offset(-7, -7)),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: GestureDetector(
-                      onTap: () => {}, child: const Text('Hi there')),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40.0, right: 40),
-              child: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: Colors.grey.shade100,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Color.fromARGB(20, 0, 0, 0),
-                            blurRadius: 5,
-                            offset: Offset(7, 7)),
-                        BoxShadow(
-                            color: Colors.white,
-                            blurRadius: 5,
-                            offset: Offset(-7, -7)),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: SizedBox(
-                          height: 40,
-                          child: Image.asset('assets/images/gallery.png')),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                    ),
-                    child: Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width / 1.7,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.grey.shade100,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Color.fromARGB(20, 0, 0, 0),
-                              blurRadius: 5,
-                              offset: Offset(7, 7)),
-                          BoxShadow(
-                              color: Colors.white,
-                              blurRadius: 5,
-                              offset: Offset(-7, -7)),
-                        ],
-                      ),
-                      child: const Center(child: Text('Insert image')),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 50.0, bottom: 20, left: 30, right: 30),
-              child: GestureDetector(
-                // onTap: (() => print('Gallery')),
-                onTap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const EditRant()))
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7),
-                    color: Colors.grey.shade100,
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color.fromARGB(20, 0, 0, 0),
-                          blurRadius: 5,
-                          offset: Offset(7, 7)),
-                      BoxShadow(
-                          color: Colors.white,
-                          blurRadius: 5,
-                          offset: Offset(-7, -7)),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: SizedBox(
-                        height: 150,
-                        child: Image.asset('assets/images/gallery.png')),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: GestureDetector(
-                    onTap: (() => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const MyNavigationBar(),
-                          ),
-                          (route) => false,
-                        )),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 5,
-                      height: 40,
-                      margin: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.grey.shade100,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Color.fromARGB(20, 0, 0, 0),
-                              blurRadius: 5,
-                              offset: Offset(7, 7)),
-                          BoxShadow(
-                              color: Colors.white,
-                              blurRadius: 5,
-                              offset: Offset(-7, -7)),
-                        ],
-                      ),
-                      child: const Center(child: Text('Discard')),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: GestureDetector(
-                    onTap: (() => {}),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 5,
-                      height: 40,
-                      margin: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7),
-                        color: Colors.grey.shade100,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Color.fromARGB(20, 0, 0, 0),
-                              blurRadius: 5,
-                              offset: Offset(7, 7)),
-                          BoxShadow(
-                              color: Colors.white,
-                              blurRadius: 5,
-                              offset: Offset(-7, -7)),
-                        ],
-                      ),
-                      child: Center(
-                        child: SizedBox(
-                            // height: ,
-                            child: Image.asset('assets/images/rant_logo.png')),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+        child: Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Column(children: [_context(), gallery()])),
       ),
     );
   }
+
+  _context() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 5.0, bottom: 25, right: 10, left: 10),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10.0,
+                    right: 10,
+                    top: 15,
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: SizedBox(
+                          height: 40,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30)),
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.network(
+                                FirebaseAuth.instance.currentUser!.photoURL!),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        FirebaseAuth.instance.currentUser!.displayName!,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: 15, top: 20, right: 10, bottom: 10),
+                      child: Text(
+                        'Type something you would like to rant',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  image() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 15.0,
+        right: 15,
+      ),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        clipBehavior: Clip.antiAlias,
+        child: Image.network(url),
+      ),
+    );
+  }
+
+  gallery() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.grey,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.network(url),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
+                child: Row(
+                  children: const [
+                    Icon(CupertinoIcons.photo),
+                    Spacer(),
+                    Icon(CupertinoIcons.delete)
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
+
+const String url =
+    'https://th.bing.com/th/id/OIP.D7E68k2v1S5tdBs-nZx7zAHaEK?pid=ImgDet&w=1367&h=769&rs=1';

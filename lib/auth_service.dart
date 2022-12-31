@@ -2,20 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:rant_app/main.dart';
+import 'package:rant_app/loginpage.dart';
 import 'package:rant_app/navbar.dart';
 
 String name = '';
 String uid = '';
 String email = '';
-String following = '';
 String data = '';
 
 class AuthService {
   Future<dynamic> retrieveData() async {
     var doc =
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
-    return data = doc.data()!['following'];
+    try {
+      data = doc.data()!['email'];
+    } catch (ex) {
+      print(ex);
+    } finally {
+      print('finally block executed');
+    }
+    // data = doc.data()!['email'];
+    return data;
   }
 
 // keytool -exportcert -list -v -alias upload-keystore -keystore C:/Users/Acer/upload-keystore.jks
@@ -29,16 +36,13 @@ class AuthService {
             uid = FirebaseAuth.instance.currentUser!.uid;
             email = FirebaseAuth.instance.currentUser!.email!;
 
-            Future d = retrieveData();
-            print('${d}');
-
-            if (data == '0') {
-              print(data + 'if loop');
+            retrieveData();
+            if (data == email) {
+              print('epudraa');
               FirebaseFirestore.instance.collection("users").doc(uid).set({
                 "uid": uid,
                 "name": name,
                 "email": email,
-                "following": following
               });
             }
             late DocumentReference documentReference =
@@ -75,6 +79,6 @@ class AuthService {
     FirebaseAuth.instance.signOut();
     String name = '';
     String uid = '';
-    String fol = '';
+    String data = '';
   }
 }
