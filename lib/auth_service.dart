@@ -5,10 +5,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rant_app/loginpage.dart';
 import 'package:rant_app/navbar.dart';
 
-String name = '';
-String uid = '';
-String email = '';
-String data = '';
+String? name;
+String? uid;
+String? email;
+String? data;
 
 class AuthService {
   Future<dynamic> retrieveData() async {
@@ -38,12 +38,14 @@ class AuthService {
 
             retrieveData();
             if (data == email) {
-              print('epudraa');
+              print("Palaya user ah nee");
               FirebaseFirestore.instance.collection("users").doc(uid).set({
                 "uid": uid,
                 "name": name,
                 "email": email,
               });
+            } else {
+              print("New user ah neee");
             }
             late DocumentReference documentReference =
                 FirebaseFirestore.instance.collection("users").doc();
@@ -77,8 +79,8 @@ class AuthService {
   signOut() async {
     GoogleSignIn().disconnect();
     FirebaseAuth.instance.signOut();
-    String name = '';
-    String uid = '';
-    String data = '';
+    String? name;
+    String? uid;
+    String? data;
   }
 }

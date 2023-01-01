@@ -1,75 +1,103 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:like_button/like_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rant_app/Provider/theme.dart';
-import 'package:rant_app/new_rant.dart';
+import 'package:like_button/like_button.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class UserProfile extends StatefulWidget {
+  const UserProfile({Key? key}) : super(key: key);
+
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<UserProfile> createState() => _UserProfileState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 80,
         toolbarHeight: 80,
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(CupertinoIcons.add),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const NewRant()));
-            },
+          TextButton(
+            onPressed: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey, borderRadius: BorderRadius.circular(10)),
+              child: const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  'Unfollow',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.dark_mode),
-            onPressed: () {
-              context.read<TemporaryData>().changeTheme();
-            },
-          ),
+
+          // IconButton(
+          //   icon: const Icon(CupertinoIcons.wand_stars_inverse),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
         ], //<Widget>[]
         backgroundColor: Colors.black,
         // elevation: 50.0,
-        leadingWidth: 80,
-        leading: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                  image: const AssetImage(
-                    'assets/images/logo.png',
-                  ),
-                  invertColors:
-                      context.watch<TemporaryData>().theme ? false : true,
-                  fit: BoxFit.cover),
-            ),
-          ),
-        ),
+        // leadingWidth: MediaQuery.of(context).size.width,
+        title: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(FirebaseAuth.instance.currentUser!.displayName!)),
       ),
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Column(
-            children: [
-              _context(),
-
-// Rant Box ENDING
-            ],
-          ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                            FirebaseAuth.instance.currentUser!.photoURL!),
+                      ),
+                    ),
+                  ],
+                ),
+                // Image.network(FirebaseAuth.instance.currentUser!.photoURL!),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      FirebaseAuth.instance.currentUser!.displayName!,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      'Bio',
+                      style: TextStyle(
+                          color: Colors.white, fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            _rants(),
+            _rants(),
+            _rants(),
+            _rants()
+          ],
         ),
       ),
     );
   }
 
-  _context() {
+  _rants() {
     return Column(
       children: [
         Container(
@@ -78,14 +106,6 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: Colors.grey,
-            // boxShadow: const [
-            //   BoxShadow(
-            //       color: Color.fromARGB(20, 0, 0, 0),
-            //       blurRadius: 5,
-            //       offset: Offset(10, 10)),
-            //   BoxShadow(
-            //       color: Colors.white, blurRadius: 5, offset: Offset(-10, -10)),
-            // ],
           ),
           child: Padding(
             padding: const EdgeInsets.only(
@@ -113,12 +133,10 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      GestureDetector(
-                          onTap: () => {},
-                          child: Text(
-                            FirebaseAuth.instance.currentUser!.displayName!,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          )),
+                      Text(
+                        FirebaseAuth.instance.currentUser!.displayName!,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const Spacer(),
                       Padding(
                         padding: const EdgeInsets.only(right: 20.0),
@@ -138,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                             likeBuilder: (isTapped) {
                               return Icon(
                                 CupertinoIcons.heart_fill,
-                                color: isTapped ? Colors.pink : Colors.black,
+                                color: !isTapped ? Colors.pink : Colors.black,
                               );
                             },
                             // countPostion: CountPostion.bottom,
@@ -159,26 +177,15 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(
-                          left: 15, top: 20, right: 10, bottom: 10),
-                      child: Text('Your rant comes here'),
-                    ),
+                        padding: EdgeInsets.only(
+                            left: 15, top: 20, right: 10, bottom: 10),
+                        child: Text('Type something you would like to rant.')),
                     Padding(
                         padding: const EdgeInsets.only(
                           left: 15.0,
                           right: 15,
                         ),
-                        child: image()
-                        // child: Container(
-                        //     decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.circular(20),
-                        //   image: const DecorationImage(
-                        //       image: NetworkImage(
-                        //           'https://wallpapercave.com/dwp1x/wp6045534.jpg'),
-                        //       fit: BoxFit.cover),
-                        // )),
-                        // child: Image.asset('assets/images/home.png', scale: 3.0),
-                        ),
+                        child: image()),
                   ],
                 ),
               ],
@@ -196,6 +203,6 @@ class _HomePageState extends State<HomePage> {
       child: Image.network(url),
     );
   }
-}
 
-const String url = 'https://wallpapercave.com/dwp1x/wp5756429.jpg';
+  String url = 'https://wallpapercave.com/dwp1x/wp5756429.jpg';
+}

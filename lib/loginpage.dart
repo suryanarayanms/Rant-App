@@ -31,12 +31,29 @@ class LoginPageState extends State<LoginPage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 125.0, left: 50),
-              child: Text(
-                "The Best place\nyou can\nrant",
-                style: TextStyle(fontSize: 30),
-                textAlign: TextAlign.start,
+            Padding(
+              padding: const EdgeInsets.only(top: 200.0, left: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      "Welcome to Rant !",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  Text(
+                    "Rant what's on your mind.\nNever get bored.",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
+                ],
               ),
             ),
             const Spacer(),
@@ -92,6 +109,7 @@ class LoginPageState extends State<LoginPage> {
                             child: Text(
                               ' Sign in with Google ',
                               style: TextStyle(
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black,
                                 fontSize: 19,
                               ),
