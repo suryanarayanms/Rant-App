@@ -16,11 +16,7 @@ class AuthService {
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
     try {
       data = doc.data()!['email'];
-    } catch (ex) {
-      print(ex);
-    } finally {
-      print('finally block executed');
-    }
+    } finally {}
     // data = doc.data()!['email'];
     return data;
   }
@@ -37,18 +33,27 @@ class AuthService {
             email = FirebaseAuth.instance.currentUser!.email!;
 
             retrieveData();
-            if (data == email) {
-              print("Palaya user ah nee");
+            if (data != email) {
               FirebaseFirestore.instance.collection("users").doc(uid).set({
                 "uid": uid,
                 "name": name,
                 "email": email,
+                "following": 0,
+                "followers": 0,
+                "accountName": name,
+                "bio": "",
+                "theme": true
               });
             } else {
-              print("New user ah neee");
+              FirebaseFirestore.instance.collection("users").doc(uid).update({
+                "uid": uid,
+                "name": name,
+                "email": email,
+              });
+              // bio = '', accountName = displayName, following = 1, followers = 0;
             }
-            late DocumentReference documentReference =
-                FirebaseFirestore.instance.collection("users").doc();
+            // late DocumentReference documentReference =
+            //     FirebaseFirestore.instance.collection("users").doc();
             return const MyNavigationBar();
           } else {
             return const LoginPage();
@@ -79,8 +84,9 @@ class AuthService {
   signOut() async {
     GoogleSignIn().disconnect();
     FirebaseAuth.instance.signOut();
-    String? name;
-    String? uid;
-    String? data;
+    String name = '';
+    String uid = '';
+    String data = '';
+    String email = '';
   }
 }

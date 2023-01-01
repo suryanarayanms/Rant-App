@@ -159,4 +159,5 @@ class _FavouritesState extends State<Favourites> {
   }
 }
 
-const String url = 'https://wallpapercave.com/dwp1x/wp5756429.jpg';
+const String url =
+    'https://firebasestorage.googleapis.com/v0/b/rant-me.appspot.com/o/rantImages%2F1672594327592.jpg?alt=media&token=e1e08343-0216-4612-ba00-fb1ac3107726';
