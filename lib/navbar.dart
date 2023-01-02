@@ -27,21 +27,21 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.10),
+      backgroundColor: Color(0xff181A28),
       body: Center(
         child: screen[index],
       ),
       bottomNavigationBar: Container(
-        color: Colors.transparent,
+        color: Color(0xff181A28),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
           child: GNav(
             textStyle: const TextStyle(
-                fontWeight: FontWeight.bold, color: Colors.white),
+                fontWeight: FontWeight.bold, color: Colors.black),
             color: Colors.white,
-            backgroundColor: Colors.transparent,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
+            backgroundColor: Color(0xff181A28),
+            activeColor: Colors.black,
+            tabBackgroundColor: Colors.white,
             gap: 8,
             onTabChange: (index) {
               setState(() => this.index = index);

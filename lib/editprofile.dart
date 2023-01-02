@@ -24,13 +24,13 @@ class _EditProfileState extends State<EditProfile> {
             },
           ),
         ], //<Widget>[]
-        backgroundColor: Colors.black,
-        // elevation: 50.0,
+        backgroundColor: Color(0xff181A28),
+        elevation: 0.0,
         // leadingWidth: MediaQuery.of(context).size.width,
         title: const Padding(
             padding: EdgeInsets.all(10), child: Text('Edit Profile')),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xff181A28),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(

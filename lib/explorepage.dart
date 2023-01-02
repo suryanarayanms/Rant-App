@@ -12,27 +12,27 @@ class _ExploreState extends State<Explore> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 0,
+      length: 1,
       child: Scaffold(
           appBar: AppBar(
+            elevation: 0,
             toolbarHeight: 80,
-            backgroundColor: Colors.black,
+            backgroundColor: Color(0xff181A28),
             title: const Padding(
                 padding: EdgeInsets.all(10), child: Text('Explore')),
           ),
-          backgroundColor: Colors.black,
+          backgroundColor: Color(0xff181A28),
           body: NestedScrollView(
             physics: const BouncingScrollPhysics(),
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
+                  title: _profile(),
                   expandedHeight: 70,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: _profile(),
-                  ),
-                  backgroundColor: Colors.black,
+                  backgroundColor: Color(0xff181A28),
                   pinned: true,
+                  elevation: 0,
                   floating: true,
                 ),
               ];
@@ -57,14 +57,27 @@ class _ExploreState extends State<Explore> {
       child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(20),
+            color: Color(0xff181A28),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 10,
+                  offset: Offset(5, 5)),
+              BoxShadow(
+                  color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                  blurRadius: 10,
+                  offset: Offset(-5, -5)),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(
               children: const [
                 Text(
                   'Search',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 Spacer(),
                 Icon(CupertinoIcons.search)

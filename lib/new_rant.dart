@@ -17,9 +17,12 @@ class NewRantState extends State<NewRant> {
   String _myrant = '';
   File? imageFile;
   XFile? imagePath;
+  File? imagepicked;
+  var uploadPath = '';
   final ImagePicker _picker = ImagePicker();
   FirebaseStorage storageRef = FirebaseStorage.instance;
   String collectionName = "rantImages";
+
   @override
   Widget build(BuildContext context) {
     setState(() {
@@ -30,6 +33,7 @@ class NewRantState extends State<NewRant> {
         toolbarHeight: 80,
         actions: <Widget>[
           IconButton(
+            tooltip: 'Post',
             icon: const Icon(Icons.podcasts_outlined),
             onPressed: () {
               // UPLOAD IMAGE
@@ -127,8 +131,8 @@ class NewRantState extends State<NewRant> {
             },
           ),
         ], //<Widget>[]
-        backgroundColor: Colors.black,
-        // elevation: 50.0,
+        backgroundColor: Color(0xff181A28),
+        elevation: 0.0,
         leadingWidth: 80,
         // leadingWidth: MediaQuery.of(context).size.width,
         // leading: GestureDetector(
@@ -137,97 +141,112 @@ class NewRantState extends State<NewRant> {
         //     CupertinoIcons.delete,
         //   ),
         // ),
-        title: const Padding(padding: EdgeInsets.all(10), child: Text('Rant')),
+        title: Text('Rant'),
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xff181A28),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: Column(children: [_context(), gallery()])),
+        child: Column(children: [_context(), gallery()]),
       ),
     );
   }
 
   _context() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.grey,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 5.0, bottom: 10, right: 10, left: 10),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10.0,
-                    right: 10,
-                    top: 15,
-                  ),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: SizedBox(
-                          height: 40,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            clipBehavior: Clip.antiAlias,
-                            child: Image.network(
-                                FirebaseAuth.instance.currentUser!.photoURL!),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 10,
+                    offset: Offset(5, 5)),
+                BoxShadow(
+                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    blurRadius: 10,
+                    offset: Offset(-5, -5)),
+              ],
+              color: Color(0xff181A28),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 5.0, bottom: 10, right: 10, left: 10),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10.0,
+                      right: 10,
+                      top: 15,
+                    ),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: SizedBox(
+                            height: 40,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.network(
+                                  FirebaseAuth.instance.currentUser!.photoURL!),
+                            ),
                           ),
                         ),
-                      ),
-                      Text(
-                        FirebaseAuth.instance.currentUser!.displayName!,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          FirebaseAuth.instance.currentUser!.displayName!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          autofocus: false,
+                          keyboardType: TextInputType.streetAddress,
+                          textInputAction: TextInputAction.newline,
+                          maxLines: 10,
+                          cursorColor: Colors.white,
+                          style: TextStyle(color: Colors.white),
+                          onChanged: (myrant) {
+                            _myrant = myrant;
+                          },
+                          decoration: InputDecoration(
+                            hintStyle: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white10.withOpacity(0.2)),
+                            hintText: 'Type something you would like to rant',
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        autofocus: false,
-                        keyboardType: TextInputType.streetAddress,
-                        textInputAction: TextInputAction.newline,
-                        maxLines: 10,
-                        cursorColor: Colors.black,
-                        onChanged: (myrant) {
-                          _myrant = myrant;
-                        },
-                        decoration: InputDecoration(
-                          hintStyle: const TextStyle(fontSize: 15),
-                          hintText: 'Type something you would like to rant',
-                          enabledBorder: const OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.transparent)),
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.transparent)),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -246,74 +265,108 @@ class NewRantState extends State<NewRant> {
   }
 
   gallery() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.grey,
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  clipBehavior: Clip.antiAlias,
-                  child: imagepicked != null
-                      ? GestureDetector(
-                          onTap: (() => {imagepicker()}),
-                          child: Image.file(
-                            imagepicked!,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: (() => {imagepicker()}),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // margin: const EdgeInsets.all(10),
-                            height: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey.withOpacity(0.5),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 10,
+                    offset: Offset(5, 5)),
+                BoxShadow(
+                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    blurRadius: 10,
+                    offset: Offset(-5, -5)),
+              ],
+              color: Color(0xff181A28),
+            ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Card(
+                    color: Color(0xff181A28),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                    clipBehavior: Clip.antiAlias,
+                    child: imagepicked != null
+                        ? GestureDetector(
+                            onTap: (() => {imagepicker()}),
+                            child: Image.file(
+                              imagepicked!,
+                              fit: BoxFit.cover,
                             ),
-                            child: const Center(
-                              child: Text(
-                                'G A L L E R Y',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
+                          )
+                        : GestureDetector(
+                            onTap: (() => {imagepicker()}),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 150,
+                              margin: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 10,
+                                      offset: Offset(5, 5)),
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 37, 39, 61)
+                                          .withOpacity(0.5),
+                                      blurRadius: 10,
+                                      offset: Offset(-5, -5)),
+                                ],
+                                color: Color(0xff181A28),
+                              ),
+                              child: const Center(
+                                child: Text(
+                                  'G A L L E R Y',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                        onTap: (() => {imagepicker()}),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(CupertinoIcons.photo),
-                        )),
-                    const Spacer(),
-                    GestureDetector(
-                        onTap: (() => {imagedeleter()}),
-                        child: const Icon(CupertinoIcons.delete)),
-                  ],
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 40, right: 40, bottom: 20),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                          onTap: (() => {imagepicker()}),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              CupertinoIcons.photo,
+                              color: Colors.white,
+                            ),
+                          )),
+                      const Spacer(),
+                      GestureDetector(
+                          onTap: (() => {imagedeleter()}),
+                          child: const Icon(
+                            CupertinoIcons.delete,
+                            color: Colors.white,
+                          )),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -324,8 +377,6 @@ class NewRantState extends State<NewRant> {
     });
   }
 
-  File? imagepicked;
-  var uploadPath = '';
   imagepicker() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
