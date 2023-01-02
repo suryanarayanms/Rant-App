@@ -16,13 +16,13 @@ class _FavouritesState extends State<Favourites> {
       appBar: AppBar(
         toolbarHeight: 80,
         //<Widget>[]
-        backgroundColor: Color(0xff181A28),
+        backgroundColor: const Color(0xff181A28),
         elevation: 0.0,
         // leadingWidth: MediaQuery.of(context).size.width,
         title: const Padding(
             padding: EdgeInsets.all(10), child: Text('Favourites')),
       ),
-      backgroundColor: Color(0xff181A28),
+      backgroundColor: const Color(0xff181A28),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -48,16 +48,17 @@ class _FavouritesState extends State<Favourites> {
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Color(0xff181A28),
+              color: const Color(0xff181A28),
               boxShadow: [
                 BoxShadow(
                     color: Colors.black.withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(5, 5)),
+                    offset: const Offset(5, 5)),
                 BoxShadow(
-                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    color:
+                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(-5, -5)),
+                    offset: const Offset(-5, -5)),
               ],
             ),
             child: Padding(

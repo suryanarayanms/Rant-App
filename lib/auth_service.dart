@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rant_app/loginpage.dart';
 import 'package:rant_app/navbar.dart';
@@ -9,21 +10,22 @@ String? name;
 String? uid;
 String? email;
 String? data;
+String? profile;
 
 class AuthService {
-  Future<dynamic> retrieveData() async {
+  retrieveData() async {
     var doc =
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
-    try {
-      data = doc.data()!['email'];
-    } finally {}
+
     // data = doc.data()!['email'];
-    return data;
+
+    // return data;
   }
 
 // keytool -exportcert -list -v -alias upload-keystore -keystore C:/Users/Acer/upload-keystore.jks
   //Determine if the user is authenticated.
-  handleAuthState() {
+  Widget handleAuthState() {
+    retrieveData();
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
@@ -31,9 +33,13 @@ class AuthService {
             name = FirebaseAuth.instance.currentUser!.displayName!;
             uid = FirebaseAuth.instance.currentUser!.uid;
             email = FirebaseAuth.instance.currentUser!.email!;
+            profile = FirebaseAuth.instance.currentUser!.photoURL!;
 
-            retrieveData();
+//new user
             if (data != email) {
+              print(data);
+              print(email);
+              print('changes');
               FirebaseFirestore.instance.collection("users").doc(uid).set({
                 "uid": uid,
                 "name": name,
@@ -41,16 +47,16 @@ class AuthService {
                 "following": 0,
                 "followers": 0,
                 "accountName": name,
-                "bio": "",
-                "theme": true
+                "bio": "I'm a star.",
+                "theme": true,
+                "profilepic": profile
               });
-            } else {
-              FirebaseFirestore.instance.collection("users").doc(uid).update({
-                "uid": uid,
-                "name": name,
-                "email": email,
-              });
-              // bio = '', accountName = displayName, following = 1, followers = 0;
+            }
+//old user
+            else {
+              print(data);
+              print(email);
+              print('does not change');
             }
             // late DocumentReference documentReference =
             //     FirebaseFirestore.instance.collection("users").doc();
@@ -88,5 +94,6 @@ class AuthService {
     String uid = '';
     String data = '';
     String email = '';
+    String profile = '';
   }
 }

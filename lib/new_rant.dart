@@ -14,20 +14,29 @@ class NewRant extends StatefulWidget {
 }
 
 class NewRantState extends State<NewRant> {
+  var doc;
   String _myrant = '';
   File? imageFile;
   XFile? imagePath;
   File? imagepicked;
   var uploadPath = '';
+  String accountName = '';
+  String profilepic = '';
   final ImagePicker _picker = ImagePicker();
   FirebaseStorage storageRef = FirebaseStorage.instance;
   String collectionName = "rantImages";
+  Future<dynamic> retrieve() async {
+    doc = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    accountName = doc.data()!['accountName'];
+    profilepic = doc.data()!['profilepic'];
+  }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      isLoading = false;
-    });
+    retrieve();
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -131,7 +140,7 @@ class NewRantState extends State<NewRant> {
             },
           ),
         ], //<Widget>[]
-        backgroundColor: Color(0xff181A28),
+        backgroundColor: const Color(0xff181A28),
         elevation: 0.0,
         leadingWidth: 80,
         // leadingWidth: MediaQuery.of(context).size.width,
@@ -141,9 +150,9 @@ class NewRantState extends State<NewRant> {
         //     CupertinoIcons.delete,
         //   ),
         // ),
-        title: Text('Rant'),
+        title: const Text('Rant'),
       ),
-      backgroundColor: Color(0xff181A28),
+      backgroundColor: const Color(0xff181A28),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(children: [_context(), gallery()]),
@@ -166,13 +175,14 @@ class NewRantState extends State<NewRant> {
                 BoxShadow(
                     color: Colors.black.withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(5, 5)),
+                    offset: const Offset(5, 5)),
                 BoxShadow(
-                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    color:
+                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(-5, -5)),
+                    offset: const Offset(-5, -5)),
               ],
-              color: Color(0xff181A28),
+              color: const Color(0xff181A28),
             ),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -190,18 +200,21 @@ class NewRantState extends State<NewRant> {
                         Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: SizedBox(
-                            height: 40,
+                            height: 55,
+                            width: 55,
                             child: Card(
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
+                                  borderRadius: BorderRadius.circular(10)),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                  FirebaseAuth.instance.currentUser!.photoURL!),
+                                profilepic,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
                         Text(
-                          FirebaseAuth.instance.currentUser!.displayName!,
+                          accountName!,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -218,7 +231,7 @@ class NewRantState extends State<NewRant> {
                           textInputAction: TextInputAction.newline,
                           maxLines: 10,
                           cursorColor: Colors.white,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                           onChanged: (myrant) {
                             _myrant = myrant;
                           },
@@ -279,20 +292,21 @@ class NewRantState extends State<NewRant> {
                 BoxShadow(
                     color: Colors.black.withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(5, 5)),
+                    offset: const Offset(5, 5)),
                 BoxShadow(
-                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    color:
+                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(-5, -5)),
+                    offset: const Offset(-5, -5)),
               ],
-              color: Color(0xff181A28),
+              color: const Color(0xff181A28),
             ),
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15),
                   child: Card(
-                    color: Color(0xff181A28),
+                    color: const Color(0xff181A28),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     clipBehavior: Clip.antiAlias,
@@ -316,14 +330,15 @@ class NewRantState extends State<NewRant> {
                                   BoxShadow(
                                       color: Colors.black.withOpacity(0.5),
                                       blurRadius: 10,
-                                      offset: Offset(5, 5)),
+                                      offset: const Offset(5, 5)),
                                   BoxShadow(
-                                      color: Color.fromARGB(255, 37, 39, 61)
-                                          .withOpacity(0.5),
+                                      color:
+                                          const Color.fromARGB(255, 37, 39, 61)
+                                              .withOpacity(0.5),
                                       blurRadius: 10,
-                                      offset: Offset(-5, -5)),
+                                      offset: const Offset(-5, -5)),
                                 ],
-                                color: Color(0xff181A28),
+                                color: const Color(0xff181A28),
                               ),
                               child: const Center(
                                 child: Text(

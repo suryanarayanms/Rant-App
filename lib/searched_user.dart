@@ -2,18 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rant_app/auth_service.dart';
-import 'package:rant_app/edit_rant.dart';
+import 'package:like_button/like_button.dart';
 import 'package:rant_app/userprofile.dart';
 import 'package:rant_app/view_image.dart';
 
-import 'editprofile.dart';
-
-class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+class SearchedUser extends StatefulWidget {
+  final String uid;
+  const SearchedUser({Key? key, required this.uid}) : super(key: key);
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<SearchedUser> createState() => _SearchedUserState();
 }
 
 String data = '';
@@ -23,16 +21,16 @@ String accountName = '';
 String bio = '';
 int following = 0;
 
-class _ProfileState extends State<Profile> {
+class _SearchedUserState extends State<SearchedUser> {
   late CollectionReference ref = FirebaseFirestore.instance
       .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .doc(widget.uid)
       .collection('rants');
 
   Future<dynamic> profilePic() async {
     doc = await FirebaseFirestore.instance
         .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(widget.uid)
         .get();
     // setState(() {
     //   following = doc.data()!['following'];
@@ -48,38 +46,49 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     profilePic();
     return DefaultTabController(
-      length: 3,
+      length: 1,
       child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 80,
             actions: <Widget>[
-              IconButton(
-                icon: const Icon(CupertinoIcons.arrow_2_circlepath),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => EditProfile(
-                            accountName: accountName,
-                            bio: bio,
-                            profilepic: profilepic),
-                      ));
-                },
-              ),
-              IconButton(
-                icon: const Icon(CupertinoIcons.back),
-                onPressed: () {
-                  AuthService().signOut();
-                },
-              ),
+              GestureDetector(
+                  child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xff181A28),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 10,
+                            offset: const Offset(5, 5)),
+                        BoxShadow(
+                            color: const Color.fromARGB(255, 37, 39, 61)
+                                .withOpacity(0.5),
+                            blurRadius: 10,
+                            offset: const Offset(-5, -5)),
+                      ],
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        'Follow',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    )),
+              )
+                  // child: Icon(Icons.star),
+                  ),
             ], //<Widget>[]
             backgroundColor: const Color(0xff181A28),
             elevation: 0,
             // elevation: 50.0,
             // leadingWidth: MediaQuery.of(context).size.width,
-            title: const Padding(
-              padding: EdgeInsets.all(10),
-              child: Text('Settings'),
+            title: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(accountName),
             ),
             // bottom: TabBar(
             //   tabs: [
@@ -96,8 +105,11 @@ class _ProfileState extends State<Profile> {
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   expandedHeight: 220,
-                  flexibleSpace: FlexibleSpaceBar(background: _profile()),
+                  toolbarHeight: 200,
+                  title: _profile(),
+                  // flexibleSpace: FlexibleSpaceBar(background: _profile()),
                   backgroundColor: const Color(0xff181A28),
                   pinned: true,
                   floating: true,
@@ -109,20 +121,15 @@ class _ProfileState extends State<Profile> {
                       Tab(
                         text: 'Rants',
                       ),
-                      Tab(
-                        text: 'Friends',
-                        // child: Text(''),
-                      ),
-                      Tab(
-                        text: 'Homies',
-                      )
                     ],
                   ),
                 ),
               ];
             },
             body: TabBarView(
-              children: <Widget>[_rants(), _following(), _followers()],
+              children: <Widget>[
+                _rants(),
+              ],
             ),
           )),
     );
@@ -290,6 +297,37 @@ class _ProfileState extends State<Profile> {
                                               color: Colors.white),
                                         )),
                                     const Spacer(),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 20.0),
+                                      child: GestureDetector(
+                                        // onTap: () => {print('Favourite')},
+                                        child: LikeButton(
+                                          // likeCount: 120,
+                                          animationDuration:
+                                              const Duration(seconds: 1),
+                                          bubblesColor: const BubblesColor(
+                                              dotPrimaryColor: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              dotSecondaryColor: Color.fromARGB(
+                                                  255, 251, 8, 134),
+                                              dotThirdColor: Color.fromARGB(
+                                                  255, 251, 8, 134),
+                                              dotLastColor: Color.fromARGB(
+                                                  255, 255, 255, 255)),
+                                          likeBuilder: (isTapped) {
+                                            return Icon(
+                                              CupertinoIcons.heart_fill,
+                                              color: isTapped
+                                                  ? Colors.pink
+                                                  : Colors.white,
+                                            );
+                                          },
+                                          // countPostion: CountPostion.bottom,
+                                        ),
+                                        // child: Icon(Icons.star),
+                                      ),
+                                    ),
                                     GestureDetector(
                                       onTap: () => {
                                         showModalBottomSheet(
@@ -357,61 +395,6 @@ class _ProfileState extends State<Profile> {
                                                       ),
                                                       onTap: () {
                                                         Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons
-                                                            .woo_commerce_outlined,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Edit',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                        String rant_image =
-                                                            doc['image'];
-                                                        String rant_text =
-                                                            doc['rant'];
-                                                        String rant_id =
-                                                            doc['rantid'];
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: ((context) => EditRant(
-                                                                    rant_textt:
-                                                                        rant_text,
-                                                                    rant_image:
-                                                                        rant_image,
-                                                                    rant_id:
-                                                                        rant_id))));
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons.delete_rounded,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Delete',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection("users")
-                                                            .doc(uid)
-                                                            .collection('rants')
-                                                            .doc(doc['rantid'])
-                                                            .delete();
                                                       },
                                                     ),
                                                   ],

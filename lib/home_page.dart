@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ], //<Widget>[]
-        backgroundColor: Color(0xff181A28),
+        backgroundColor: const Color(0xff181A28),
         elevation: 0,
         leadingWidth: 80,
         leading: Padding(
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      backgroundColor: Color(0xff181A28),
+      backgroundColor: const Color(0xff181A28),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -76,16 +76,17 @@ class _HomePageState extends State<HomePage> {
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Color(0xff181A28),
+              color: const Color(0xff181A28),
               boxShadow: [
                 BoxShadow(
                     color: Colors.black.withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(5, 5)),
+                    offset: const Offset(5, 5)),
                 BoxShadow(
-                    color: Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
+                    color:
+                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
                     blurRadius: 10,
-                    offset: Offset(-5, -5)),
+                    offset: const Offset(-5, -5)),
               ],
             ),
             child: Padding(
