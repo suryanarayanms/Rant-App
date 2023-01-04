@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.dark_mode),
             onPressed: () {
-              context.read<TemporaryData>().changeTheme();
+              // context.read<TemporaryData>().changeTheme();
             },
           ),
         ], //<Widget>[]

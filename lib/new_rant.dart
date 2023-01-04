@@ -6,6 +6,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import 'Provider/theme.dart';
 
 class NewRant extends StatefulWidget {
   const NewRant({Key? key}) : super(key: key);
@@ -87,6 +90,7 @@ class NewRantState extends State<NewRant> {
                           "image": uploadPath,
                           "likes": 0,
                           "uid": FirebaseAuth.instance.currentUser!.uid,
+                          "accountName": accountName
                         });
                       },
                     );
@@ -108,6 +112,7 @@ class NewRantState extends State<NewRant> {
                       "image": "",
                       "likes": 0,
                       "uid": FirebaseAuth.instance.currentUser!.uid,
+                      "accountName": accountName
                     });
                   }
                 } else {
@@ -128,6 +133,7 @@ class NewRantState extends State<NewRant> {
                     "image": "",
                     "likes": 0,
                     "uid": FirebaseAuth.instance.currentUser!.uid,
+                    "accountName": accountName
                   });
                 }
                 // uploadImage();
@@ -207,14 +213,14 @@ class NewRantState extends State<NewRant> {
                                   borderRadius: BorderRadius.circular(10)),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                profilepic,
+                                context.watch<TemporaryData>().profilepic,
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
                         Text(
-                          accountName!,
+                          context.watch<TemporaryData>().accountName,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),

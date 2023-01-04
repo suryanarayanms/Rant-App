@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:rant_app/Provider/theme.dart';
 import 'package:rant_app/loginpage.dart';
 import 'package:rant_app/navbar.dart';
 
@@ -13,33 +15,21 @@ String? data;
 String? profile;
 
 class AuthService {
-  retrieveData() async {
-    var doc =
-        await FirebaseFirestore.instance.collection("users").doc(uid).get();
-
-    // data = doc.data()!['email'];
-
-    // return data;
-  }
-
 // keytool -exportcert -list -v -alias upload-keystore -keystore C:/Users/Acer/upload-keystore.jks
   //Determine if the user is authenticated.
   Widget handleAuthState() {
-    retrieveData();
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            name = FirebaseAuth.instance.currentUser!.displayName!;
+            name = FirebaseAuth.instance.currentUser!.displayName;
             uid = FirebaseAuth.instance.currentUser!.uid;
             email = FirebaseAuth.instance.currentUser!.email!;
             profile = FirebaseAuth.instance.currentUser!.photoURL!;
+            context.read<TemporaryData>().retrieveData(uid);
 
 //new user
-            if (data != email) {
-              print(data);
-              print(email);
-              print('changes');
+            if (context.watch<TemporaryData>().uid != uid) {
               FirebaseFirestore.instance.collection("users").doc(uid).set({
                 "uid": uid,
                 "name": name,
@@ -53,11 +43,7 @@ class AuthService {
               });
             }
 //old user
-            else {
-              print(data);
-              print(email);
-              print('does not change');
-            }
+
             // late DocumentReference documentReference =
             //     FirebaseFirestore.instance.collection("users").doc();
             return const MyNavigationBar();

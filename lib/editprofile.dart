@@ -11,7 +11,7 @@ class EditProfile extends StatefulWidget {
   final String accountName;
   final String bio;
   final String profilepic;
-  EditProfile(
+  const EditProfile(
       {Key? key,
       required this.accountName,
       required this.bio,
@@ -349,7 +349,7 @@ class _EditProfileState extends State<EditProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
-                  maxLength: 10,
+                  maxLength: 17,
                   maxLines: 1,
                   autofocus: false,
                   cursorColor: Colors.white,

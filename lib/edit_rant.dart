@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rant_app/navbar.dart';
 
 class EditRant extends StatefulWidget {
   final String rant_id;
@@ -80,17 +79,9 @@ class EditRantState extends State<EditRant> {
               // UPLOAD IMAGE
 
               if (_myrant == rant_text && imagepicked == null) {
-                print("1");
-                print(_myrant);
-                print(rant_text);
-
                 Navigator.pop(context);
               } else if ((_myrant != rant_text && _myrant != '') &&
                   imagepicked == null) {
-                print("2");
-                print(_myrant);
-                print(rant_text);
-
                 FirebaseFirestore.instance
                     .collection("users")
                     .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -101,10 +92,6 @@ class EditRantState extends State<EditRant> {
                 });
                 Navigator.pop(context);
               } else if (_myrant == '' && imagepicked != null) {
-                print("3");
-                print(_myrant);
-                print(rant_text);
-
                 String uploadFileName =
                     DateTime.now().millisecondsSinceEpoch.toString() + '.jpg';
                 Reference reference = storageRef
@@ -135,10 +122,6 @@ class EditRantState extends State<EditRant> {
                 Navigator.pop(context);
               } else if ((_myrant != rant_text && _myrant != '') &&
                   imagepicked != null) {
-                print("4");
-                print(_myrant);
-                print(rant_text);
-
                 String uploadFileName =
                     DateTime.now().millisecondsSinceEpoch.toString() + '.jpg';
                 Reference reference = storageRef
@@ -168,7 +151,6 @@ class EditRantState extends State<EditRant> {
                 );
                 Navigator.pop(context);
               } else {
-                print("no changes");
                 Navigator.pop(context);
               }
             },
@@ -241,14 +223,14 @@ class EditRantState extends State<EditRant> {
                                   borderRadius: BorderRadius.circular(10)),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                '${profile}',
+                                profile,
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
                         Text(
-                          accountName!,
+                          accountName,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -437,12 +419,12 @@ class EditRantState extends State<EditRant> {
                                     color: const Color(0xff181A28),
                                   ),
                                   child: Card(
-                                    color: Color(0xff181A28),
+                                    color: const Color(0xff181A28),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(20)),
                                     clipBehavior: Clip.antiAlias,
-                                    child: Center(
+                                    child: const Center(
                                         child: Text(
                                       'G A L L E R Y',
                                       style: TextStyle(

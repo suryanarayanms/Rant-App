@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rant_app/auth_service.dart';
 import 'package:rant_app/edit_rant.dart';
-import 'package:rant_app/userprofile.dart';
+import 'package:rant_app/searched_user.dart';
 import 'package:rant_app/view_image.dart';
 
+import 'Provider/theme.dart';
 import 'editprofile.dart';
 
 class Profile extends StatefulWidget {
@@ -16,37 +18,23 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
-String data = '';
-var doc;
-String profilepic = '';
-String accountName = '';
-String bio = '';
-int following = 0;
-
 class _ProfileState extends State<Profile> {
   late CollectionReference ref = FirebaseFirestore.instance
       .collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('rants');
+  late CollectionReference following = FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .collection('following');
 
-  Future<dynamic> profilePic() async {
-    doc = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    // setState(() {
-    //   following = doc.data()!['following'];
-    // });
-    bio = doc.data()!['bio'];
-
-    accountName = doc.data()!['accountName'];
-    profilepic = doc.data()!['profilepic'];
-    return doc;
-  }
+  late CollectionReference followers = FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .collection('followers');
 
   @override
   Widget build(BuildContext context) {
-    profilePic();
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -60,9 +48,11 @@ class _ProfileState extends State<Profile> {
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => EditProfile(
-                            accountName: accountName,
-                            bio: bio,
-                            profilepic: profilepic),
+                            accountName:
+                                context.watch<TemporaryData>().accountName,
+                            bio: context.watch<TemporaryData>().bio,
+                            profilepic:
+                                context.watch<TemporaryData>().profilepic),
                       ));
                 },
               ),
@@ -81,13 +71,6 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.all(10),
               child: Text('Settings'),
             ),
-            // bottom: TabBar(
-            //   tabs: [
-            //     Tab(
-            //       child: Icon(Icons.dangerous),
-            //     )
-            //   ],
-            // ),
           ),
           backgroundColor: const Color(0xff181A28),
           body: NestedScrollView(
@@ -110,11 +93,11 @@ class _ProfileState extends State<Profile> {
                         text: 'Rants',
                       ),
                       Tab(
-                        text: 'Friends',
+                        text: 'Following',
                         // child: Text(''),
                       ),
                       Tab(
-                        text: 'Homies',
+                        text: 'Followers',
                       )
                     ],
                   ),
@@ -122,7 +105,7 @@ class _ProfileState extends State<Profile> {
               ];
             },
             body: TabBarView(
-              children: <Widget>[_rants(), _following(), _followers()],
+              children: <Widget>[_rants(), _myfollowing(), _myfollowers()],
             ),
           )),
     );
@@ -164,7 +147,7 @@ class _ProfileState extends State<Profile> {
                             borderRadius: BorderRadius.circular(20)),
                         clipBehavior: Clip.antiAlias,
                         child: Image.network(
-                          profilepic,
+                          context.watch<TemporaryData>().profilepic,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -176,14 +159,14 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    accountName,
+                    context.watch<TemporaryData>().accountName,
                     style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    bio,
+                    context.watch<TemporaryData>().bio,
                     style: const TextStyle(
                         fontSize: 10,
                         color: Colors.white,
@@ -205,279 +188,523 @@ class _ProfileState extends State<Profile> {
           stream: ref.snapshots(),
           builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasData) {
-              return ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(10),
-                itemCount: snapshot.data?.docs.length,
-                itemBuilder: ((context, index) {
-                  dynamic doc = snapshot.data?.docs[index].data();
-
-                  return Column(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: const Color(0xff181A28),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 10,
-                                offset: const Offset(5, 5)),
-                            BoxShadow(
-                                color: const Color.fromARGB(255, 37, 39, 61)
-                                    .withOpacity(0.5),
-                                blurRadius: 10,
-                                offset: const Offset(-5, -5)),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5.0, bottom: 25, right: 10, left: 10),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 10.0,
-                                  right: 10,
-                                  top: 15,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: Container(
-                                        // margin: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                  blurRadius: 10,
-                                                  offset: const Offset(5, 5)),
-                                              BoxShadow(
-                                                  color: const Color.fromARGB(
-                                                          255, 37, 39, 61)
-                                                      .withOpacity(0.5),
-                                                  blurRadius: 10,
-                                                  offset: const Offset(-5, -5)),
-                                            ],
-                                            color: const Color(0xff181A28)),
-                                        height: 55,
-                                        width: 55,
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+              if (snapshot.data?.docs.length != 0) {
+                return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(10),
+                  itemCount: snapshot.data?.docs.length,
+                  itemBuilder: ((context, index) {
+                    dynamic doc = snapshot.data?.docs[index].data();
+                    return Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: const Color(0xff181A28),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(5, 5)),
+                              BoxShadow(
+                                  color: const Color.fromARGB(255, 37, 39, 61)
+                                      .withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(-5, -5)),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5.0, bottom: 25, right: 10, left: 10),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    right: 10,
+                                    top: 15,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: Container(
+                                          // margin: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Image.network(
-                                            profilepic,
-                                            fit: BoxFit.cover,
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(5, 5)),
+                                                BoxShadow(
+                                                    color: const Color.fromARGB(
+                                                            255, 37, 39, 61)
+                                                        .withOpacity(0.5),
+                                                    blurRadius: 10,
+                                                    offset:
+                                                        const Offset(-5, -5)),
+                                              ],
+                                              color: const Color(0xff181A28)),
+                                          height: 55,
+                                          width: 55,
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Image.network(
+                                              context
+                                                  .watch<TemporaryData>()
+                                                  .profilepic,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),
+                                      GestureDetector(
+                                          onTap: () => {},
+                                          child: Text(
+                                            context
+                                                .watch<TemporaryData>()
+                                                .accountName,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          )),
+                                      const Spacer(),
+                                      GestureDetector(
+                                        onTap: () => {
+                                          showModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                            elevation: 0,
+                                            isDismissible: true,
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                    color: Colors.black),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 15.0,
+                                                          bottom: 20,
+                                                          left: 20),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Center(
+                                                          child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                bottom: 20.0),
+                                                        child: Container(
+                                                          height: 4,
+                                                          width: 60,
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.grey,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20)),
+                                                        ),
+                                                      )),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                          Icons.photo,
+                                                          color: Colors.white70,
+                                                        ),
+                                                        title: const Text(
+                                                          'Share as Image',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white70),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                          Icons.note,
+                                                          color: Colors.white70,
+                                                        ),
+                                                        title: const Text(
+                                                          'Share as Text',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white70),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                          Icons
+                                                              .woo_commerce_outlined,
+                                                          color: Colors.white70,
+                                                        ),
+                                                        title: const Text(
+                                                          'Edit',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white70),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                          String rantImage =
+                                                              doc['image'];
+                                                          String rantText =
+                                                              doc['rant'];
+                                                          String rantId =
+                                                              doc['rantid'];
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: ((context) => EditRant(
+                                                                      rant_textt:
+                                                                          rantText,
+                                                                      rant_image:
+                                                                          rantImage,
+                                                                      rant_id:
+                                                                          rantId))));
+                                                        },
+                                                      ),
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                          Icons.delete_rounded,
+                                                          color: Colors.white70,
+                                                        ),
+                                                        title: const Text(
+                                                          'Delete',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white70),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.pop(
+                                                              context);
+
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(uid)
+                                                              .collection(
+                                                                  'rants')
+                                                              .doc(
+                                                                  doc['rantid'])
+                                                              .delete();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        },
+                                        child: SizedBox(
+                                            height: 20,
+                                            child: Image.asset(
+                                              'assets/images/dots.png',
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15,
+                                          top: 20,
+                                          right: 10,
+                                          bottom: 10),
+                                      child: Text(
+                                        '${doc['rant']}',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontStyle: FontStyle.italic),
+                                      ),
                                     ),
-                                    GestureDetector(
-                                        onTap: () => {},
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 15.0,
+                                          right: 15,
+                                        ),
+                                        child: (doc['image'] != '')
+                                            ? image(doc)
+                                            : Card(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30)),
+                                                clipBehavior: Clip.antiAlias,
+                                                child: Image.network(
+                                                  url,
+                                                  width: 1000,
+                                                  height: 0,
+                                                ),
+                                              )),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                );
+              } else {
+                return const Center(
+                    child: Text(
+                  "You haven't ranted yet.",
+                  style: TextStyle(color: Colors.white),
+                ));
+              }
+            } else {
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: Colors.white,
+              ));
+            }
+          }),
+    );
+  }
+
+  _myfollowing() {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: StreamBuilder(
+          stream: following.snapshots(),
+          builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data?.docs.length != 0) {
+                return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(10),
+                  itemCount: snapshot.data?.docs.length,
+                  itemBuilder: ((context, index) {
+                    dynamic doc = snapshot.data?.docs[index].data();
+                    // context.read<TemporaryData>().myfollowing('${doc['uid']}');
+
+                    return Column(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(5, 5)),
+                              BoxShadow(
+                                  color: const Color.fromARGB(255, 37, 39, 61)
+                                      .withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(-5, -5)),
+                            ],
+                            color: const Color(0xff181A28),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5.0, bottom: 25, right: 10, left: 10),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    right: 10,
+                                    top: 15,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: GestureDetector(
+                                          onTap: () => {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SearchedUser(
+                                                          uid: doc['uid'],
+                                                        )))
+                                          },
+                                          child: SizedBox(
+                                            child: SizedBox(
+                                              height: 55,
+                                              width: 55,
+                                              child: Card(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                clipBehavior: Clip.antiAlias,
+                                                child: Image.network(
+                                                  doc['profilepic'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SearchedUser(
+                                                        uid: doc['uid'],
+                                                      )))
+                                        },
                                         child: Text(
-                                          accountName,
+                                          doc['name'],
                                           style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
-                                        )),
-                                    const Spacer(),
-                                    GestureDetector(
-                                      onTap: () => {
-                                        showModalBottomSheet(
-                                          backgroundColor: Colors.transparent,
-                                          elevation: 0,
-                                          isDismissible: true,
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (context) {
-                                            return Container(
-                                              decoration: BoxDecoration(
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20.0),
+                                        child: GestureDetector(
+                                            onTap: () => {
+                                                  (doc['uid'] == null)
+                                                      ? {
+                                                          // FirebaseFirestore
+                                                          //     .instance
+                                                          //     .collection("users")
+                                                          //     .doc(FirebaseAuth
+                                                          //         .instance
+                                                          //         .currentUser!
+                                                          //         .uid)
+                                                          //     .collection(
+                                                          //         "following")
+                                                          //     .doc(doc['uid'])
+                                                          //     .set({
+                                                          //   "uid": doc['uid'],
+                                                          //   "name": doc['name'],
+                                                          //   "profilepic":
+                                                          //       doc['profilepic'],
+                                                          //   "bio": doc['bio'],
+                                                          //   "following": true,
+                                                          //   "docid": myDoc.id,
+                                                          // }),
+                                                        }
+                                                      : {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid)
+                                                              .collection(
+                                                                  "following")
+                                                              .doc(doc['uid'])
+                                                              .delete(),
+                                                        }
+                                                },
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      const Color(0xff181A28),
                                                   borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  color: Colors.black),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 15.0,
-                                                    bottom: 20,
-                                                    left: 20),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Center(
-                                                        child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 20.0),
-                                                      child: Container(
-                                                        height: 4,
-                                                        width: 60,
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.grey,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                      ),
-                                                    )),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons.photo,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Share as Image',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons.note,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Share as Text',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons
-                                                            .woo_commerce_outlined,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Edit',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-                                                        String rant_image =
-                                                            doc['image'];
-                                                        String rant_text =
-                                                            doc['rant'];
-                                                        String rant_id =
-                                                            doc['rantid'];
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: ((context) => EditRant(
-                                                                    rant_textt:
-                                                                        rant_text,
-                                                                    rant_image:
-                                                                        rant_image,
-                                                                    rant_id:
-                                                                        rant_id))));
-                                                      },
-                                                    ),
-                                                    ListTile(
-                                                      leading: const Icon(
-                                                        Icons.delete_rounded,
-                                                        color: Colors.white70,
-                                                      ),
-                                                      title: const Text(
-                                                        'Delete',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white70),
-                                                      ),
-                                                      onTap: () {
-                                                        Navigator.pop(context);
-
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection("users")
-                                                            .doc(uid)
-                                                            .collection('rants')
-                                                            .doc(doc['rantid'])
-                                                            .delete();
-                                                      },
-                                                    ),
+                                                      BorderRadius.circular(10),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.5),
+                                                        blurRadius: 10,
+                                                        offset:
+                                                            const Offset(5, 5)),
+                                                    BoxShadow(
+                                                        color: const Color
+                                                                    .fromARGB(
+                                                                255, 37, 39, 61)
+                                                            .withOpacity(0.5),
+                                                        blurRadius: 10,
+                                                        offset: const Offset(
+                                                            -5, -5)),
                                                   ],
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      },
-                                      child: SizedBox(
-                                          height: 20,
-                                          child: Image.asset(
-                                            'assets/images/dots.png',
-                                            color: Colors.white,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 15,
-                                        top: 20,
-                                        right: 10,
-                                        bottom: 10),
-                                    child: Text(
-                                      '${doc['rant']}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 15.0,
-                                        right: 15,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: (doc['uid'] == null)
+                                                      ? const Text(
+                                                          'Follow',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        )
+                                                      : const Text(
+                                                          'Unfollow',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                ))
+                                            // child: Icon(Icons.star),
+                                            ),
                                       ),
-                                      child: (doc['image'] != '')
-                                          ? image(doc)
-                                          : Card(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30)),
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Image.network(
-                                                url,
-                                                width: 1000,
-                                                height: 0,
-                                              ),
-                                            )),
-                                ],
-                              ),
-                            ],
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }),
-              );
+                      ],
+                    );
+                  }),
+                );
+              } else {
+                return const Center(
+                    child: Text(
+                  "You haven't followed anyone yet.",
+                  style: TextStyle(color: Colors.white),
+                ));
+              }
             } else {
-              return const Center(child: Text('dsdfsdfsd'));
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: Colors.white,
+              ));
             }
           }),
     );
@@ -519,247 +746,207 @@ class _ProfileState extends State<Profile> {
 
   String url = 'https://wallpapercave.com/dwp1x/wp5756429.jpg';
 
-  _following() {
+  _myfollowers() {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: const Offset(5, 5)),
-                BoxShadow(
-                    color:
-                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: const Offset(-5, -5)),
-              ],
-              color: const Color(0xff181A28),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5.0, bottom: 25, right: 10, left: 10),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10.0,
-                      right: 10,
-                      top: 15,
-                    ),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: SizedBox(
-                            child: GestureDetector(
-                              onTap: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const UserProfile()))
-                              },
-                              child: SizedBox(
-                                height: 55,
-                                width: 55,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Image.network(
-                                    profilepic,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const UserProfile()))
-                          },
-                          child: Text(
-                            FirebaseAuth.instance.currentUser!.displayName!,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: GestureDetector(
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff181A28),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(5, 5)),
-                                      BoxShadow(
-                                          color: const Color.fromARGB(
-                                                  255, 37, 39, 61)
-                                              .withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(-5, -5)),
-                                    ],
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Text(
-                                      'Unfollow',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ))
-                              // child: Icon(Icons.star),
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+      child: StreamBuilder(
+          stream: followers.snapshots(),
+          builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data?.docs.length != 0) {
+                return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(10),
+                  itemCount: snapshot.data?.docs.length,
+                  itemBuilder: ((context, index) {
+                    dynamic doc = snapshot.data?.docs[index].data();
 
-  _followers() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: const Offset(5, 5)),
-                BoxShadow(
-                    color:
-                        const Color.fromARGB(255, 37, 39, 61).withOpacity(0.5),
-                    blurRadius: 10,
-                    offset: const Offset(-5, -5)),
-              ],
-              color: const Color(0xff181A28),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5.0, bottom: 25, right: 10, left: 10),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10.0,
-                      right: 10,
-                      top: 15,
-                    ),
-                    child: Row(
+                    return Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: SizedBox(
-                            child: GestureDetector(
-                              onTap: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const UserProfile()))
-                              },
-                              child: SizedBox(
-                                height: 55,
-                                width: 55,
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Image.network(
-                                    profilepic,
-                                    fit: BoxFit.cover,
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(5, 5)),
+                              BoxShadow(
+                                  color: const Color.fromARGB(255, 37, 39, 61)
+                                      .withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: const Offset(-5, -5)),
+                            ],
+                            color: const Color(0xff181A28),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5.0, bottom: 25, right: 10, left: 10),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    right: 10,
+                                    top: 15,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: GestureDetector(
+                                          onTap: () => {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SearchedUser(
+                                                          uid: doc['uid'],
+                                                        )))
+                                          },
+                                          child: SizedBox(
+                                            height: 55,
+                                            width: 55,
+                                            child: Card(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              clipBehavior: Clip.antiAlias,
+                                              child: Image.network(
+                                                doc['profilepic'],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SearchedUser(
+                                                        uid: doc['uid'],
+                                                      )))
+                                        },
+                                        child: Text(
+                                          doc['name'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20.0),
+                                        child: GestureDetector(
+                                            onTap: () => {
+                                                  (doc['uid'] == null)
+                                                      ? {}
+                                                      : {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid)
+                                                              .collection(
+                                                                  "followers")
+                                                              .doc(doc['uid'])
+                                                              .delete(),
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(doc['uid'])
+                                                              .collection(
+                                                                  "following")
+                                                              .doc(FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid)
+                                                              .delete(),
+                                                        }
+                                                },
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      const Color(0xff181A28),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.5),
+                                                        blurRadius: 10,
+                                                        offset:
+                                                            const Offset(5, 5)),
+                                                    BoxShadow(
+                                                        color: const Color
+                                                                    .fromARGB(
+                                                                255, 37, 39, 61)
+                                                            .withOpacity(0.5),
+                                                        blurRadius: 10,
+                                                        offset: const Offset(
+                                                            -5, -5)),
+                                                  ],
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: (doc['uid'] == null)
+                                                      ? const Text(
+                                                          'Follow',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        )
+                                                      : const Text(
+                                                          'Remove',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                ))
+                                            // child: Icon(Icons.star),
+                                            ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const UserProfile()))
-                          },
-                          child: Text(
-                            FirebaseAuth.instance.currentUser!.displayName!,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                        ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: GestureDetector(
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff181A28),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(5, 5)),
-                                      BoxShadow(
-                                          color: const Color.fromARGB(
-                                                  255, 37, 39, 61)
-                                              .withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(-5, -5)),
-                                    ],
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Text(
-                                      'Remove',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ))
-                              // child: Icon(Icons.star),
-                              ),
-                        ),
                       ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+                    );
+                  }),
+                );
+              } else {
+                return const Center(
+                    child: Text(
+                  "You have no followers.",
+                  style: TextStyle(color: Colors.white),
+                ));
+              }
+            } else {
+              return const Center(child: Text('dsdfsdfsd'));
+            }
+          }),
     );
   }
 }

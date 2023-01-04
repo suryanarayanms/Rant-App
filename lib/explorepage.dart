@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:rant_app/searched_user.dart';
 
 class Explore extends StatefulWidget {
@@ -14,6 +14,8 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   String name = '';
   String uid = '';
+  String bio = '';
+  String profilepic = '';
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -48,153 +50,176 @@ class _ExploreState extends State<Explore> {
                   FirebaseFirestore.instance.collection('users').snapshots(),
               builder: (context, snapshots) {
                 return (snapshots.connectionState == ConnectionState.waiting)
-                    ? Center(
+                    ? const Center(
                         child: CircularProgressIndicator(
                           color: Colors.white,
                         ),
                       )
                     : ListView.builder(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         itemCount: snapshots.data!.docs.length,
                         itemBuilder: (context, index) {
                           var data = snapshots.data!.docs[index].data()
                               as Map<String, dynamic>;
 
-                          if (name!.isEmpty) {
-                            return Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: GestureDetector(
-                                onTap: () => {
-                                  uid = data['uid'],
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SearchedUser(uid: uid)))
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: const Color(0xff181A28),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(5, 5)),
-                                      BoxShadow(
-                                          color: const Color.fromARGB(
-                                                  255, 37, 39, 61)
-                                              .withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(-5, -5)),
-                                    ],
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      data['name'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
+                          if (data['uid'] !=
+                              FirebaseAuth.instance.currentUser!.uid) {
+                            if (name.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: GestureDetector(
+                                  onTap: () => {
+                                    uid = data['uid'],
+                                    bio = data['bio'],
+                                    name = data['accountName'],
+                                    profilepic = data['profilepic'],
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SearchedUser(
+                                                  uid: uid,
+                                                )))
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: const Color(0xff181A28),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            blurRadius: 10,
+                                            offset: const Offset(5, 5)),
+                                        BoxShadow(
+                                            color: const Color.fromARGB(
+                                                    255, 37, 39, 61)
+                                                .withOpacity(0.5),
+                                            blurRadius: 10,
+                                            offset: const Offset(-5, -5)),
+                                      ],
                                     ),
-                                    subtitle: Text(
-                                      data['bio'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                    leading: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: const Color(0xff181A28),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
-                                              blurRadius: 10,
-                                              offset: const Offset(5, 5)),
-                                          BoxShadow(
-                                              color: const Color.fromARGB(
-                                                      255, 37, 39, 61)
-                                                  .withOpacity(0.5),
-                                              blurRadius: 10,
-                                              offset: const Offset(-5, -5)),
-                                        ],
+                                    child: ListTile(
+                                      title: Text(
+                                        data['accountName'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      child: CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(data['profilepic']),
+                                      subtitle: Text(
+                                        data['bio'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                      leading: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: const Color(0xff181A28),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
+                                                blurRadius: 10,
+                                                offset: const Offset(5, 5)),
+                                            BoxShadow(
+                                                color: const Color.fromARGB(
+                                                        255, 37, 39, 61)
+                                                    .withOpacity(0.5),
+                                                blurRadius: 10,
+                                                offset: const Offset(-5, -5)),
+                                          ],
+                                        ),
+                                        child: CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(data['profilepic']),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          }
-                          if (data['name']
-                              .toString()
-                              .toLowerCase()
-                              .startsWith(name!.toLowerCase())) {
-                            return Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: GestureDetector(
-                                onTap: () => {
-                                  uid = data['uid'],
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SearchedUser(uid: uid)))
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: const Color(0xff181A28),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(5, 5)),
-                                      BoxShadow(
-                                          color: const Color.fromARGB(
-                                                  255, 37, 39, 61)
-                                              .withOpacity(0.5),
-                                          blurRadius: 10,
-                                          offset: const Offset(-5, -5)),
-                                    ],
-                                  ),
-                                  child: ListTile(
-                                    title: Text(
-                                      data['name'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Text(
-                                      data['bio'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                    leading: CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(data['profilepic']),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
+                              );
+                            }
+                            if (data['accountName']
+                                    .toString()
+                                    .toLowerCase()
+                                    .startsWith(name.toLowerCase()) ||
+                                data['bio']
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(name.toLowerCase())) {
+                              return (data['uid'] !=
+                                      FirebaseAuth.instance.currentUser!.uid)
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: GestureDetector(
+                                        onTap: () => {
+                                          uid = data['uid'],
+                                          bio = data['bio'],
+                                          name = data['accountName'],
+                                          profilepic = data['profilepic'],
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SearchedUser(
+                                                        uid: uid,
+                                                      )))
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: const Color(0xff181A28),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                  blurRadius: 10,
+                                                  offset: const Offset(5, 5)),
+                                              BoxShadow(
+                                                  color: const Color.fromARGB(
+                                                          255, 37, 39, 61)
+                                                      .withOpacity(0.5),
+                                                  blurRadius: 10,
+                                                  offset: const Offset(-5, -5)),
+                                            ],
+                                          ),
+                                          child: ListTile(
+                                            title: Text(
+                                              data['accountName'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            subtitle: Text(
+                                              data['bio'],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                            leading: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  data['profilepic']),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : const Text('');
+                            }
                           }
                           return Container();
                         });
@@ -202,6 +227,11 @@ class _ExploreState extends State<Explore> {
             ),
           )),
     );
+  }
+
+  final fieldText = TextEditingController();
+  void clearText() {
+    fieldText.clear();
   }
 
   _profile() {
@@ -226,6 +256,7 @@ class _ExploreState extends State<Explore> {
           children: [
             Expanded(
               child: TextField(
+                controller: fieldText,
                 cursorColor: Colors.white,
                 style: const TextStyle(
                     fontSize: 20,
@@ -233,7 +264,7 @@ class _ExploreState extends State<Explore> {
                     color: Colors.white),
                 decoration: InputDecoration(
                   counterText: '',
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                   hintText: 'Search',
                   enabledBorder: const OutlineInputBorder(
@@ -251,7 +282,21 @@ class _ExploreState extends State<Explore> {
                 },
               ),
             ),
-            Icon(CupertinoIcons.search)
+            GestureDetector(
+                onTap: () => {
+                      if (name != '')
+                        {
+                          clearText(),
+                          setState(() {
+                            name = "";
+                          }),
+                          FocusScope.of(context).requestFocus(FocusNode()),
+                          //  FocusScopeNode currentFocus = FocusScope.of(context),
+                        }
+                    },
+                child: (name != '')
+                    ? const Icon(CupertinoIcons.xmark)
+                    : const Icon(CupertinoIcons.search)),
           ],
         ),
       ),

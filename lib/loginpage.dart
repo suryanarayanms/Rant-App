@@ -66,21 +66,8 @@ class LoginPageState extends State<LoginPage> {
               //     (route) => false),
 
               onTap: () => {
+                // context.read<TemporaryData>().retrieveData(context),
                 AuthService().signInWithGoogle(),
-                // name = FirebaseAuth.instance.currentUser!.displayName,
-                // uid = FirebaseAuth.instance.currentUser!.uid,
-                // print('boomeerrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'),
-                // if (FirebaseAuth.instance.currentUser!.displayName != 'null')
-                //   {
-                //     // Map <String, dynamic> data = {
-                //     //     "uid":uid,
-                //     //     "name": name
-                //     //   },
-                //     FirebaseFirestore.instance
-                //         .collection("users")
-                //         .doc(uid)
-                //         .set({"uid": uid, "name": name})
-                //   }
               },
               child: Padding(
                 padding: const EdgeInsets.all(40),

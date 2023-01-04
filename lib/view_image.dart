@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ViewImage extends StatefulWidget {
   final String image;
@@ -17,7 +13,7 @@ class _ViewImageState extends State<ViewImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [],
+        actions: const [],
         backgroundColor: const Color(0xff181A28),
         elevation: 0,
       ),
@@ -44,7 +40,7 @@ class _ViewImageState extends State<ViewImage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               clipBehavior: Clip.antiAlias,
-              child: Image.network('${widget.image}'),
+              child: Image.network(widget.image),
             ),
           ),
         ),
